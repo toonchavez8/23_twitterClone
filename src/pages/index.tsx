@@ -1,13 +1,15 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 
-import { api } from "n/utils/api";
 import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { api } from "n/utils/api";
 
 const Home: NextPage = () => {
 
 const USER = useUser();
+
+const { data } = api.posts.getAll.useQuery();
+
 
   return (
     <>
@@ -23,6 +25,13 @@ const USER = useUser();
           {!!USER.isSignedIn && <SignOutButton  />}
         </div>
       <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+      <div className="flex flex-col items-center justify-center">
+        {data?.map((post) => (
+          <div key={post.id} className="bg-white rounded-lg shadow-lg p-4 m-4">
+            <p className="text-gray-500">{post.content}</p>
+          </div>
+        ))}
+      </div>
       </main>
     </>
   );
